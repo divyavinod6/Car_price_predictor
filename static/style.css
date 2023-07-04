@@ -23,3 +23,18 @@
 .form-group {
   text-align: center;
 }
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  padding-right: 30px; /* Add space for the arrow icon */
+}
+
+.select-wrapper i {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensure the arrow icon doesn't capture mouse events */
+}

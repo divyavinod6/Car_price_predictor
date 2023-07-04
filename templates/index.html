@@ -11,6 +11,10 @@
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
   </head>
   <body>
     <div class="bg-dark">
@@ -23,28 +27,29 @@
               </div>
             </div>
             <div class="card-body">
-              <form method="post" action="#" accept-charset="utf-8">
+              <form method="post" accept-charset="utf-8">
                 <div class="col-18 form-group">
-                  <label for=""><b>Select Company</b></label>
+                  <label><b>Select Company</b></label>
                   <select
                     class="selectPicker form-control"
                     name="company"
                     id="company"
                     required="1"
+                    onchange="load_car_models(this.value,'car_model')"
                   >
-                    <option value=""></option>
+                    {% for company in options['companies'] %}
+                    <option value="{{company}}">{{company}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
                   <label for=""><b>Select Model</b></label>
                   <select
                     class="selectPicker form-control"
-                    name="model"
-                    id="model"
+                    name="car_model"
+                    id="car_model"
                     required="1"
-                  >
-                    <option value=""></option>
-                  </select>
+                  ></select>
                 </div>
                 <div class="col-18 form-group">
                   <label for=""><b>Select Year of Purchase</b></label>
@@ -54,18 +59,9 @@
                     id="years"
                     required="1"
                   >
-                    <option value=""></option>
-                  </select>
-                </div>
-                <div class="col-18 form-group">
-                  <label for=""><b>Select Year of Purchase</b></label>
-                  <select
-                    class="selectPicker form-control"
-                    name="company"
-                    id="company"
-                    required="1"
-                  >
-                    <option value=""></option>
+                    {% for year in options['years'] %}
+                    <option value="{{year}}">{{year}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -76,17 +72,36 @@
                     id="fuel_type"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for fuel_type in options['fuel_type'] %}
+                    <option value="{{fuel_type}}">{{fuel_type}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
-                  <label for=""><b>Select Kilometers Driven</b></label>
-                  <input
-                    type="text"
-                    id="kilometers_driven"
+                  <label for=""><b>Select Location</b></label>
+                  <select
+                    class="selectPicker form-control"
+                    name="location"
+                    id="location"
+                    required="1"
+                  >
+                    {% for location in options['locations'] %}
+                    <option value="{{location}}">{{location}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-18 form-group">
+                  <label for=""><b>Kilometers Driven</b></label>
+                  <select
+                    class="selectPicker form-control"
                     name="kilometers_driven"
-                    placeholder="Enter Number of Kilometers Travelled"
-                  />
+                    id="kilometers_driven_select"
+                    required="1"
+                  >
+                    {% for km in options['kilometers_driven'] %}
+                    <option value="{{ km }}">{{ km }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
                 <div class="col-18 form-group">
                   <label for=""><b>Select Transmissions</b></label>
@@ -96,7 +111,9 @@
                     id="transmissions"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for transmission in options['transmissions'] %}
+                    <option value="{{transmission}}">{{transmission}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -107,7 +124,9 @@
                     id="owner_types"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for owner_type in options['owner_types'] %}
+                    <option value="{{owner_type}}">{{owner_type}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -118,7 +137,9 @@
                     id="mileages"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for mileage in options['mileages'] %}
+                    <option value="{{mileage}}">{{mileage}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -129,7 +150,9 @@
                     id="engines"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for engine in options['engines'] %}
+                    <option value="{{engine}}">{{engine}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -140,7 +163,9 @@
                     id="powers"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for power in options['powers'] %}
+                    <option value="{{power}}">{{power}}</option>
+                    {% endfor %}
                   </select>
                 </div>
                 <div class="col-18 form-group">
@@ -151,19 +176,86 @@
                     id="seats"
                     required="1"
                   >
-                    <option value=""></option>
+                    {% for seat in options['seats'] %}
+                    <option value="{{seat}}">{{seat}}</option>
+                    {% endfor %}
                   </select>
                 </div>
-                <button class="btn btn-primary form-control" onclick="">
+                <button
+                  class="btn btn-primary form-control"
+                  onclick="send_data()"
+                >
                   Predict Price
                 </button>
               </form>
+              <br />
+              <div class="row">
+                <div class="col-12">
+                  <h3><span id="prediction"></span></h3>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script>
+          // Retrieve the car models based on the selected company
+            function load_car_models(company, car_model_id) {
+              var company = company
+              var car_model = document.getElementById(car_model_id);
+              console.log(company);
+              car_model.value = "";
+              car_model.innerHTML = "";
 
+              {% for company in options['companies'] %}
+              if (company == "{{ company }}") {
+                {% for model in options['car_models'] %}
+                  {% if company in model %}
+                    var newOption = document.createElement("option");
+                    newOption.value = "{{ model }}";
+                    newOption.innerHTML = "{{ model }}";
+                    car_model.options.add(newOption);
+                  {% endif %}
+                {% endfor %}
+              }
+              {% endfor %}
+          }
+          function form_handler(event){
+            event.preventDefault()
+          }
+          function send_data() {
+        var form = document.querySelector('form');
+        var inputs = form.querySelectorAll('select');
+
+        // Check if any input is empty
+        for (var i = 0; i < inputs.length; i++) {
+          if (!inputs[i].value) {
+            alert('Please fill in all fields before submitting.');
+            return;
+          }
+        }
+
+        // Suppress form default behavior
+        form.addEventListener('submit', form_handler);
+
+        // Send and receive data to /predict
+        var fd = new FormData(form);
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/predict', true);
+        document.getElementById('prediction').innerHTML = 'Wait!.. Predicting Prices';
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            document.getElementById('prediction').innerHTML = 'Prediction: Rs' + xhr.responseText;
+          }
+        };
+
+        xhr.onload = function () {};
+        xhr.send(fd);
+      }
+    </script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
